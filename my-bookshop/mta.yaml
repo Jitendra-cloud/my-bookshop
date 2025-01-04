@@ -26,6 +26,7 @@ modules:
           srv-url: ${default-url}
     requires:
       - name: my-bookshop-auth
+      - name: my-bookshop-db
 
   - name: my-bookshop
     type: approuter.nodejs
@@ -48,6 +49,14 @@ modules:
           app-protocol: ${protocol}
           app-uri: ${default-uri}
 
+  - name: my-bookshop-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: my-bookshop-db
+
 resources:
   - name: my-bookshop-auth
     type: org.cloudfoundry.managed-service
@@ -58,3 +67,8 @@ resources:
       config:
         xsappname: my-bookshop-${org}-${space}
         tenant-mode: dedicated
+  - name: my-bookshop-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
